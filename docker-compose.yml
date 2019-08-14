@@ -1,0 +1,26 @@
+version: '3'
+services:
+  # There will be two containers up and running at the same time.
+  # First container - 'web' will be reponsible for running our
+  # react app server. This is way we need to specify ports mapping.
+  # Second container - 'tests' will be responsible for running
+  # our app tests. It will track every change in our source files
+  # (due to volumes setup) and re-run container with new start command
+  # for running tests suit.
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - .:/app
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: ["npm", "run", "test"]
